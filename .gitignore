@@ -1,0 +1,51 @@
+*.pyc
+*.log
+*.prof
+*.rdb
+.vscode
+.coverage
+.DS_Store
+~$*
+
+# compiled output
+frontend/dist/*.js
+frontend/dist/*.html
+frontend/dist/*.css
+frontend/dist/*.ico
+frontend/dist/*.map
+frontend/tmp
+
+# dependencies
+frontend/node_modules
+frontend/bower_components
+
+# IDEs and editors
+frontend/.idea
+frontend/.vscode
+frontend/.project
+frontend/.classpath
+frontend/.c9/
+frontend/*.launch
+frontend/.settings/
+
+# misc
+frontend/.sass-cache
+frontend/connect.lock
+frontend/coverage/*
+frontend/libpeerconnection.log
+frontend/npm-debug.log
+frontend/testem.log
+frontend/typings
+
+# e2e
+frontend/e2e/*.js
+frontend/e2e/*.map
+
+#System Files
+frontend/.DS_Store
+backend/.DS_Store
+frontend/Thumbs.db
+
+# pyenv
+.python-version
+version.ts

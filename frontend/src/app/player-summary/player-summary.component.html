@@ -1,0 +1,32 @@
+<div class="search-container">
+  <div class="title">HoopSearch</div>
+  <div class="subtitle">All the Intelligence, Only a Few Seconds</div>
+  <input
+    class="search-input"
+    type="text"
+    placeholder="Search for players, teams, or leagues..."
+    [(ngModel)]="searchQuery"
+    (input)="onSearch()"
+  />
+  <ul class="suggestions" *ngIf="suggestions.length > 0">
+    <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+      {{ suggestion.name }}
+    </li>
+  </ul>
+  <div class="footer-message">For use by Oklahoma City Thunder. All rights reserved 2024.</div>
+</div>
+
+<div *ngIf="playerSummary" class="player-summary">
+  <h2>{{ playerSummary.name }}</h2>
+  <p class="game-date">{{ playerSummary.games[0]?.date }}</p>
+  <p class="starter">Started? <span [ngClass]="{'green': playerSummary.games[0]?.starter}">{{ playerSummary.games[0]?.starter ? 'Yes' : 'No' }}</span></p>
+  <p>Minutes: {{ playerSummary.games[0]?.minutes }}</p>
+  <p>Points: {{ playerSummary.games[0]?.points }} | Assists: {{ playerSummary.games[0]?.assists }} | Rebounds: {{ playerSummary.games[0]?.rebounds }}</p>
+
+  <h4>Field Goal Locations:</h4>
+  <ul>
+    <li *ngFor="let shot of playerSummary.games[0]?.shots">
+      {{ shot.result }} shot at ({{ shot.coordinates[0] }}, {{ shot.coordinates[1] }})
+    </li>
+  </ul>
+</div>
