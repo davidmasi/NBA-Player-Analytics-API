@@ -1,3 +1,5 @@
+## NBA-Player-Analytics-API
+
 ## Set up database
 1. Download and install PostgreSQL from https://www.postgresql.org/download/
 2. Ensure PostgreSQL is running, and in a terminal run
