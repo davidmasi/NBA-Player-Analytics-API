@@ -1,32 +1,20 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, BehaviorSubject} from 'rxjs';
-import {map} from 'rxjs/operators';
-// import {plainToClass} from 'class-transformer';
-
-import {BaseService} from './base.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlayersService extends BaseService {
-  constructor(protected http: HttpClient) {
-    super(http);
+export class PlayersService {
+  private apiUrl = 'http://localhost:3000'; // adjust if your backend URL is different
+
+  constructor(private http: HttpClient) {}
+
+  getPlayerSummary(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/players/${id}`);
   }
 
-  getPlayerSummary(playerID: number): Observable<any> {
-    const endpoint = `${this.baseUrl}/playerSummary/${playerID}`;
-
-    return this.get(endpoint).pipe(map(
-      (data: Object) => {
-          return {
-            endpoint: endpoint,
-            apiResponse: data
-          };
-      },
-      error => {
-          return error;
-      }
-    ));
+  searchPlayers(query: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/players/search?q=${query}`);
   }
 }
