@@ -2,10 +2,27 @@
 import logging
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from app.dbmodels import Player, Game, Shot  # Import your relevant models
+from app.dbmodels.models import Player, GamePlayerStats
+from django.db.models import Q
 
 LOGGER = logging.getLogger('django')
 
+class PlayerSearch(APIView):
+    logger = LOGGER
+
+    def get(self, request):
+        """Search for players by name"""
+        try:
+            query = request.GET.get('query', '')
+            if query:
+                players = Player.objects.filter(
+                    Q(name__icontains=query)
+                ).values('id', 'name')[:10]
+                return Response(list(players))
+            return Response([])
+        except Exception as e:
+            self.logger.error(f"Error in player search: {str(e)}")
+            return Response({'error': 'Search failed'}, status=500)
 
 class PlayerSummary(APIView):
     logger = LOGGER
@@ -13,34 +30,46 @@ class PlayerSummary(APIView):
     def get(self, request, playerID):
         """Return player data"""
         try:
-            # Retrieve the player
             player = Player.objects.get(id=playerID)
+            game_stats = GamePlayerStats.objects.filter(player=player)
             
-            # Fetch games and shots related to the player
-            games = Game.objects.filter(player=player)
             player_summary = {
                 'name': player.name,
                 'games': []
             }
 
-            for game in games:
-                shots = Shot.objects.filter(game=game)
-                shots_data = []
-                for shot in shots:
-                    shots_data.append({
-                        'made': shot.made,
-                        'coordinates': (shot.x_coordinate, shot.y_coordinate),
-                    })
+            for stats in game_stats:
+                shots = stats.player_shots.all()
+                shots_data = [
+                    {
+                        'isMake': shot.is_make,
+                        'locationX': float(shot.location_x),
+                        'locationY': float(shot.location_y)
+                    } for shot in shots
+                ]
 
-                player_summary['games'].append({
-                    'date': game.date,
-                    'starter': game.starter,
-                    'minutes': game.minutes,
-                    'points': game.points,
-                    'assists': game.assists,
-                    'rebounds': game.rebounds,
+                game_data = {
+                    'date': stats.game.date.strftime('%Y-%m-%d'),
+                    'isStarter': stats.is_starter,
+                    'minutes': stats.minutes,
+                    'points': stats.points,
+                    'assists': stats.assists,
+                    'offensiveRebounds': stats.offensive_rebounds,
+                    'defensiveRebounds': stats.defensive_rebounds,
+                    'steals': stats.steals,
+                    'blocks': stats.blocks,
+                    'turnovers': stats.turnovers,
+                    'defensiveFouls': stats.defensive_fouls,
+                    'offensiveFouls': stats.offensive_fouls,
+                    'freeThrowsMade': stats.free_throws_made,
+                    'freeThrowsAttempted': stats.free_throws_attempted,
+                    'twoPointersMade': stats.two_pointers_made,
+                    'twoPointersAttempted': stats.two_pointers_attempted,
+                    'threePointersMade': stats.three_pointers_made,
+                    'threePointersAttempted': stats.three_pointers_attempted,
                     'shots': shots_data
-                })
+                }
+                player_summary['games'].append(game_data)
 
             return Response(player_summary)
         except Player.DoesNotExist:

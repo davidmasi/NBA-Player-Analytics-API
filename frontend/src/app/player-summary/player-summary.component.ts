@@ -54,9 +54,14 @@ export class PlayerSummaryComponent implements OnInit, OnDestroy {
     this.suggestions = [];
     this.playersService.getPlayerSummary(suggestion.id)
       .pipe(untilDestroyed(this))
-      .subscribe(data => {
-        this.playerSummary = data.apiResponse;
-        this.cdr.detectChanges();
+      .subscribe({
+        next: (data) => {
+          this.playerSummary = data;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error fetching player summary:', error);
+        }
       });
   }
 

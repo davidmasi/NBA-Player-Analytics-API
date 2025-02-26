@@ -6,15 +6,17 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class PlayersService {
-  private apiUrl = 'http://localhost:3000'; // adjust if your backend URL is different
+  private apiUrl = 'http://localhost:8000/api/v1';
 
   constructor(private http: HttpClient) {}
 
-  getPlayerSummary(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/players/${id}`);
+  getPlayerSummary(playerId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/playerSummary/${playerId}/`);
   }
 
   searchPlayers(query: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/players/search?q=${query}`);
+    return this.http.get(`${this.apiUrl}/playerSearch/`, {
+      params: { query }
+    });
   }
 }
