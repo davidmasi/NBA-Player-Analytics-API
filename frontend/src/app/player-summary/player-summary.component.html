@@ -4,7 +4,7 @@
   <input
     class="search-input"
     type="text"
-    placeholder="Search for players, teams, or leagues..."
+    placeholder="Search for players, teams, or leagues"
     [(ngModel)]="searchQuery"
     (input)="onSearch()"
   />
@@ -18,15 +18,55 @@
 
 <div *ngIf="playerSummary" class="player-summary">
   <h2>{{ playerSummary.name }}</h2>
-  <p class="game-date">{{ playerSummary.games[0]?.date }}</p>
-  <p class="starter">Started? <span [ngClass]="{'green': playerSummary.games[0]?.starter}">{{ playerSummary.games[0]?.starter ? 'Yes' : 'No' }}</span></p>
-  <p>Minutes: {{ playerSummary.games[0]?.minutes }}</p>
-  <p>Points: {{ playerSummary.games[0]?.points }} | Assists: {{ playerSummary.games[0]?.assists }} | Rebounds: {{ playerSummary.games[0]?.rebounds }}</p>
+  
+  <div class="game-stats" *ngFor="let game of playerSummary.games">
+    <h3>Game Date: {{ game.date }}</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <label>Started:</label>
+        <span [ngClass]="{'green': game.isStarter}">{{ game.isStarter ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="stat-item">
+        <label>Minutes:</label>
+        <span>{{ game.minutes }}</span>
+      </div>
+      <div class="stat-item">
+        <label>Points:</label>
+        <span>{{ game.points }}</span>
+      </div>
+      <div class="stat-item">
+        <label>Assists:</label>
+        <span>{{ game.assists }}</span>
+      </div>
+      <div class="stat-item">
+        <label>Rebounds:</label>
+        <span>{{ game.offensiveRebounds + game.defensiveRebounds }}</span>
+        <small>(OFF: {{ game.offensiveRebounds }} | DEF: {{ game.defensiveRebounds }})</small>
+      </div>
+      <div class="stat-item">
+        <label>Shooting:</label>
+        <span>FG: {{ game.twoPointersMade + game.threePointersMade }}/{{ game.twoPointersAttempted + game.threePointersAttempted }}</span>
+        <small>3PT: {{ game.threePointersMade }}/{{ game.threePointersAttempted }}</small>
+      </div>
+      <div class="stat-item">
+        <label>Free Throws:</label>
+        <span>{{ game.freeThrowsMade }}/{{ game.freeThrowsAttempted }}</span>
+      </div>
+      <div class="stat-item">
+        <label>Other:</label>
+        <span>STL: {{ game.steals }} | BLK: {{ game.blocks }} | TO: {{ game.turnovers }}</span>
+      </div>
+    </div>
 
-  <h4>Field Goal Locations:</h4>
-  <ul>
-    <li *ngFor="let shot of playerSummary.games[0]?.shots">
-      {{ shot.result }} shot at ({{ shot.coordinates[0] }}, {{ shot.coordinates[1] }})
-    </li>
-  </ul>
+    <div class="court-container">
+      <img src="assets/court_diagram.jpg" alt="Basketball Court" class="court-diagram">
+      <div *ngFor="let shot of game.shots" 
+           class="shot-marker"
+           [class.make]="shot.isMake"
+           [class.miss]="!shot.isMake"
+           [style.left]="getXPosition(shot.locationX) + '%'"
+           [style.bottom]="getYPosition(shot.locationY) + '%'">
+      </div>
+    </div>
+  </div>
 </div>

@@ -56,6 +56,7 @@
 .player-summary {
   text-align: center; /* Center the text */
   margin-top: 20px; /* Adjust spacing above the summary */
+  padding: 20px;
 
   h2 {
     font-size: 2em; /* Adjust size for player name */
@@ -93,6 +94,71 @@
     li {
       font-size: 1em; /* Adjust size for shot details */
       margin: 0.3em 0; /* Spacing between shots */
+    }
+  }
+
+  .game-stats {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+  }
+
+  .stat-item {
+    label {
+      font-weight: bold;
+      color: #666;
+      display: block;
+    }
+    
+    small {
+      display: block;
+      color: #888;
+      font-size: 0.8em;
+    }
+  }
+
+  .court-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    
+    .court-diagram {
+      width: 100%;
+      height: auto;
+    }
+
+    .shot-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, 50%);
+      z-index: 2;
+      
+      &.make {
+        background-color: rgba(76, 175, 80, 0.8);
+        border: 2px solid #45a049;
+      }
+      
+      &.miss {
+        background-color: rgba(244, 67, 54, 0.8);
+        border: 2px solid #da190b;
+      }
+
+      &:hover {
+        transform: translate(-50%, 50%) scale(1.5);
+        transition: transform 0.2s;
+        z-index: 10;
+      }
     }
   }
 }

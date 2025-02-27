@@ -17,7 +17,6 @@ import {PlayersService} from '../_services/players.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class PlayerSummaryComponent implements OnInit, OnDestroy {
-  // Add these properties
   searchQuery: string = '';
   suggestions: any[] = [];
   playerSummary: any;
@@ -35,7 +34,6 @@ export class PlayerSummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Add these methods
   onSearch(): void {
     if (this.searchQuery.trim()) {
       this.playersService.searchPlayers(this.searchQuery)
@@ -63,6 +61,31 @@ export class PlayerSummaryComponent implements OnInit, OnDestroy {
           console.error('Error fetching player summary:', error);
         }
       });
+  }
+
+  getXPosition(x: number): number {
+    // Court width is 1455px
+    const COURT_WIDTH = 1455;
+    const COORDINATE_SCALE = 30;
+    
+    // Center the X coordinate and scale it
+    const scaledX = x * COORDINATE_SCALE;
+    const centeredX = (COURT_WIDTH / 2) + scaledX;
+    
+    return (centeredX / COURT_WIDTH) * 100;
+  }
+
+  getYPosition(y: number): number {
+    // Court height is 1365px
+    const COURT_HEIGHT = 1365;
+    const COORDINATE_SCALE = 30;
+    const BASKET_HEIGHT_FROM_BOTTOM = 140;
+    
+    // Transform Y coordinate relative to basket position
+    const scaledY = y * COORDINATE_SCALE;
+    const adjustedY = BASKET_HEIGHT_FROM_BOTTOM + scaledY;
+    
+    return (adjustedY / COURT_HEIGHT) * 100;
   }
 
   ngOnDestroy() {}
